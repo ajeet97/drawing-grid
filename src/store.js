@@ -10,6 +10,9 @@ function toPrecision(num, p = 1) {
 
 const store = createStore({
   state: () => ({
+    theme: 'theme-1',
+    totalThemes: 6,
+
     image: null,
     canvas: { width: 0, height: 0 },
     controls: {
@@ -35,6 +38,12 @@ const store = createStore({
   }),
 
   mutations: {
+    changeTheme(state, theme) {
+      state.theme = theme
+      const html = document.querySelector('html')
+      html.className = theme
+    },
+
     updateImage(state, image) {
       state.image = image
     },

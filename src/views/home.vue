@@ -1,4 +1,5 @@
 <template>
+  <theme-selector />
   <select-image ref="image" @change="updateImage" :visible="!$store.state.image">
     Select<br />Image
   </select-image>
@@ -12,12 +13,14 @@
 import Preview from "../components/preview.vue";
 import SelectImage from "../components/select-image.vue";
 import Controls from "../components/controls.vue";
+import ThemeSelector from '../components/theme-selector.vue';
 
 export default {
   components: {
     SelectImage,
     Preview,
     Controls,
+    ThemeSelector,
   },
 
   methods: {

@@ -109,7 +109,7 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 5px 20px;
+  box-shadow: 0 -2px 10px var(--color-2);
   z-index: 1;
 }
 
