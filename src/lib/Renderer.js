@@ -76,12 +76,27 @@ class Renderer {
     this.ctx.stroke();
   }
 
+  drawGridNumber() {
+    this.ctx.fillStyle = this.controls.lineColor
+    this.ctx.font = `${this.controls.gridNumSize}px Arial`
+
+
+    for (let r = 0; r < this.grid.rows; r++) {
+      for (let c = 0; c < this.grid.cols; c++) {
+        const dx = c === 0 ? 2 : 2 + this.controls.lineWidth
+        const dy = r === 0 ? this.controls.gridNumSize : this.controls.gridNumSize + this.controls.lineWidth
+        this.ctx.fillText(`${r + 1},${c + 1}`, c * this.grid.w + dx, r * this.grid.h + dy)
+      }
+    }
+  }
+
   render() {
     if (!this.image) return
     this.ctx.clearRect(0, 0, this.c.width, this.c.height);
     this.computeGrid();
     this.drawImage();
     this.drawGrid();
+    if (this.controls.showGridNum) this.drawGridNumber();
   }
 }
 

@@ -19,6 +19,8 @@ const store = createStore({
       squareBox: true,
       lineColor: '#FFFFFF',
       lineWidth: 2,
+      showGridNum: true,
+      gridNumSize: 10,
     },
     limits: {
       minCols: 3,
