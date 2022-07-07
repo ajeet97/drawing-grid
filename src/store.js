@@ -11,16 +11,17 @@ function toPrecision(num, p = 1) {
 const store = createStore({
   state: () => ({
     image: null,
-    canvas: null,
+    canvas: { width: 0, height: 0 },
     controls: {
       rows: 8,
       cols: 8,
       size: 0,
       squareBox: true,
       lineColor: '#FFFFFF',
-      lineWidth: 2,
+      lineWidth: 1,
       showGridNum: true,
-      gridNumSize: 10,
+      gridNumSize: 9,
+      gridNumOffset: 2,
     },
     limits: {
       minCols: 3,
@@ -76,9 +77,16 @@ const store = createStore({
       // console.log(JSON.stringify(state.limits, null, 2))
     },
 
-    downloadImage() {
+    downloadImage(state) {
+      let scale = state.image.width / state.canvas.width
+      if (scale > 1) scale = 1 + (scale - 1) * 3 / 4
+
       const canvas = document.createElement('canvas')
-      const r = new Renderer(canvas)
+      const r = new Renderer(canvas, {
+        gridNumSize: state.controls.gridNumSize * scale,
+        gridNumOffset: state.controls.gridNumOffset * scale,
+        lineWidth: state.controls.lineWidth * scale,
+      })
       r.setupCanvas()
       r.render()
 

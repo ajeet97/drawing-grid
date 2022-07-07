@@ -1,11 +1,17 @@
 import store from '../store'
 
 class Renderer {
-  constructor(canvas) {
+  /**
+   * @param {HTMLCanvasElement} canvas
+   * @param {object} controls
+   */
+  constructor(canvas, controls) {
     if (!canvas) return
     this.c = canvas
     this.ctx = canvas.getContext('2d')
     this.ctx.imageSmoothingEnabled = true;
+    this.controls = store.state.controls
+    this.overrideControls = controls || {}
 
     this.grid = {
       w: 0, h: 0,
@@ -15,10 +21,6 @@ class Renderer {
 
   get image() {
     return store.state.image
-  }
-
-  get controls() {
-    return store.state.controls
   }
 
   setupCanvas(preview = false) {
@@ -83,7 +85,7 @@ class Renderer {
 
     for (let r = 0; r < this.grid.rows; r++) {
       for (let c = 0; c < this.grid.cols; c++) {
-        const dx = c === 0 ? 2 : 2 + this.controls.lineWidth
+        const dx = c === 0 ? this.controls.gridNumOffset : this.controls.gridNumOffset + this.controls.lineWidth
         const dy = r === 0 ? this.controls.gridNumSize : this.controls.gridNumSize + this.controls.lineWidth
         this.ctx.fillText(`${r + 1},${c + 1}`, c * this.grid.w + dx, r * this.grid.h + dy)
       }
@@ -92,6 +94,11 @@ class Renderer {
 
   render() {
     if (!this.image) return
+    this.controls = {
+      ...store.state.controls,
+      ...this.overrideControls,
+    }
+
     this.ctx.clearRect(0, 0, this.c.width, this.c.height);
     this.computeGrid();
     this.drawImage();
