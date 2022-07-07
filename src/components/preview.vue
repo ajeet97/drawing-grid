@@ -1,6 +1,6 @@
 <template>
-  <div style="width: 100%">
-    <canvas ref="canvas" width="100%" />
+  <div class="preview">
+    <canvas ref="canvas" />
   </div>
 </template>
 
@@ -42,9 +42,9 @@ export default {
     },
 
     reset() {
-      this.setup()
-      this.render()
-    }
+      this.setup();
+      this.render();
+    },
 
     // invertRow(imageData, row, lineWidth = 1) {
     //   row = Math.round(row)
@@ -72,3 +72,14 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.preview {
+  width: 100%;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-4);
+}
+</style>

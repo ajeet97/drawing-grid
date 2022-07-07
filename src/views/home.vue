@@ -2,7 +2,7 @@
   <select-image ref="image" @change="updateImage" :visible="!$store.state.image">
     Select<br />Image
   </select-image>
-  <div v-if="!!$store.state.image">
+  <div class="home" v-if="!!$store.state.image">
     <preview />
     <controls @new="selectImage"/>
   </div>
@@ -30,3 +30,11 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.home {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+</style>

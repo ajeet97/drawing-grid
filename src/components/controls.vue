@@ -45,9 +45,7 @@
         Square Grid
       </Switch>
       <div class="btn-grp">
-        <Button :icon="iconNew" @click="$emit('new')">
-          New
-        </Button>
+        <Button :icon="iconNew" @click="$emit('new')">New</Button>
         <Button :icon="iconDownload" @click="$store.commit('downloadImage')">
           Download
         </Button>
@@ -67,7 +65,7 @@ import iconDownload from "../assets/download.png";
 import iconNew from "../assets/new.png";
 
 export default {
-  emits: ['new'],
+  emits: ["new"],
 
   components: {
     Button,
@@ -89,16 +87,14 @@ export default {
 
 <style scoped>
 .controls {
-  position: fixed;
-  left: 0;
-  bottom: 0;
   width: 100%;
-  padding: 30px 0;
+  padding: 8px 10px;
   background: var(--color-3);
   color: var(--color-2);
   display: flex;
   align-items: center;
   justify-content: center;
+  box-shadow: 0 5px 20px;
 }
 
 .controls * {
