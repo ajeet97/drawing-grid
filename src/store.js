@@ -21,9 +21,9 @@ const store = createStore({
       lineWidth: 2,
     },
     limits: {
-      minRows: 3,
       minCols: 3,
 
+      minRows: 0,
       maxRows: 0,
       maxCols: 0,
       minSize: 0,
@@ -32,12 +32,8 @@ const store = createStore({
   }),
 
   mutations: {
-    setImage(state, image) {
+    updateImage(state, image) {
       state.image = image
-    },
-
-    removeImage(state) {
-      state.image = null
     },
 
     updateLimits(state) {
@@ -45,6 +41,7 @@ const store = createStore({
       state.limits.maxSize = Math.round(state.canvas.width / state.limits.minCols)
 
       state.limits.maxCols = Math.round(state.canvas.width / state.limits.minSize)
+      state.limits.minRows = Math.round(state.canvas.height / state.limits.maxSize)
       state.limits.maxRows = Math.round(state.canvas.height / state.limits.minSize)
 
       state.controls.size = Math.round(state.canvas.width / state.controls.cols)
@@ -65,6 +62,8 @@ const store = createStore({
       if (state.controls.squareBox) {
         state.controls.cols = toPrecision(state.canvas.width / state.controls.size)
         state.controls.rows = toPrecision(state.canvas.height / state.controls.size)
+      } else {
+        state.controls.size = toPrecision(state.canvas.width / state.controls.cols)
       }
 
       // console.log(JSON.stringify(state.controls, null, 2))

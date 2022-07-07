@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import Renderer from '../lib/Renderer'
+import Renderer from "../lib/Renderer";
 
 export default {
   emits: ["change"],
@@ -24,26 +24,27 @@ export default {
 
   mounted() {
     this.r = new Renderer(this.$refs.canvas);
-    const onResize = () => {
-      this.setup();
-      this.render();
-    }
-    window.addEventListener("resize", onResize);
-    onResize();
+    window.addEventListener("resize", this.reset);
+    this.reset();
   },
 
   methods: {
     setup() {
-      this.r.setupCanvas(false)
-      this.$store.commit('resizeCanvas', {
+      this.r.setupCanvas(false);
+      this.$store.commit("resizeCanvas", {
         width: this.r.c.width,
         height: this.r.c.height,
-      })
+      });
     },
 
     render() {
-      this.r.render()
+      this.r.render();
     },
+
+    reset() {
+      this.setup()
+      this.render()
+    }
 
     // invertRow(imageData, row, lineWidth = 1) {
     //   row = Math.round(row)
@@ -61,7 +62,11 @@ export default {
   },
 
   watch: {
-    '$store.state.controls': function() {
+    "$store.state.image": function () {
+      this.reset();
+    },
+
+    "$store.state.controls": function () {
       this.render();
     },
   },

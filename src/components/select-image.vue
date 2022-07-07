@@ -1,5 +1,10 @@
 <template>
-  <div class="select-button" ontouchstart="" @click="selectImage">
+  <div
+    class="select-button"
+    :style="`display: ${visible ? 'flex' : 'none'}`"
+    ontouchstart=""
+    @click="select"
+  >
     <slot>Select</slot>
   </div>
   <input
@@ -13,47 +18,53 @@
 
 <script>
 export default {
-  emits: ['change'],
+  emits: ["change"],
+  props: {
+    visible: {
+      type: Boolean,
+      default: true,
+    },
+  },
 
   methods: {
-    selectImage() {
+    select() {
       this.$refs.fileInput.click();
     },
 
     readImageFile(file) {
       return new Promise((resolve) => {
-        const reader = new FileReader()
-        reader.onload = e => resolve(e.target.result)
+        const reader = new FileReader();
+        reader.onload = (e) => resolve(e.target.result);
         reader.onerror = (err) => {
-          alert('Could not read image file: ' + err.message)
-          resolve(null)
-        }
-        reader.readAsDataURL(file)
-      })
+          alert("Could not read image file: " + err.message);
+          resolve(null);
+        };
+        reader.readAsDataURL(file);
+      });
     },
 
     async loadImage(file) {
-      const dataUrl = await this.readImageFile(file)
-      if (!dataUrl) return null
+      const dataUrl = await this.readImageFile(file);
+      if (!dataUrl) return null;
 
       return new Promise((resolve) => {
-        const image = new Image()
-        image.onload = () => resolve(image)
+        const image = new Image();
+        image.onload = () => resolve(image);
         image.onerror = (err) => {
-          alert('Could not load image: ' + err.message)
-          resolve(null)
-        }
-        image.src = dataUrl
-      })
+          alert("Could not load image: " + err.message);
+          resolve(null);
+        };
+        image.src = dataUrl;
+      });
     },
 
     async handleFileChange(event) {
       const [file] = event.target.files;
-      const image = file
-        ? await this.loadImage(file)
-        : null;
-      this.$emit('change', image)
-    }
+      if (!file) return;
+
+      const image = await this.loadImage(file);
+      this.$emit("change", image);
+    },
   },
 };
 </script>

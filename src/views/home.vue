@@ -1,10 +1,10 @@
 <template>
-  <select-image v-if="!$store.state.image" @change="updateImage">
+  <select-image ref="image" @change="updateImage" :visible="!$store.state.image">
     Select<br />Image
   </select-image>
-  <div v-else>
+  <div v-if="!!$store.state.image">
     <preview />
-    <controls />
+    <controls @new="selectImage"/>
   </div>
 </template>
 
@@ -21,8 +21,12 @@ export default {
 
   methods: {
     updateImage(image) {
-      this.$store.commit("setImage", image);
+      this.$store.commit("updateImage", image);
     },
+
+    selectImage() {
+      this.$refs.image.select()
+    }
   },
 };
 </script>
