@@ -1,7 +1,7 @@
 <template>
   <div class="switch-box">
-    <input type="checkbox" id="switch" :checked="checked" @change="e => $emit('change', e.target.checked)"/>
-    <label for="switch" />
+    <input type="checkbox" :id="id" :checked="checked" @change="e => $emit('change', e.target.checked)"/>
+    <label :for="id" />
     <div class="text"><slot>Toggle</slot></div>
   </div>
 </template>
@@ -9,7 +9,16 @@
 <script>
 export default {
   emits: ['change'],
-  props: ['checked']
+  props: {
+    id: {
+      type: String,
+      required: true,
+    },
+    checked: {
+      type: Boolean,
+      default: false,
+    },
+  }
 }
 </script>
 

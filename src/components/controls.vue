@@ -41,13 +41,21 @@
       <div class="btn-grp">
         <Switch
           @change="(checked) => update({ squareBox: checked })"
+          id="square-grid"
           :checked="controls.squareBox"
         >
           Square Grid
         </Switch>
         <color-picker @change="(lineColor) => update({ lineColor })">
-          Line Color
+          Grid Color
         </color-picker>
+        <Switch
+          @change="(checked) => update({ showGridNum: checked })"
+          id="grid-number"
+          :checked="controls.showGridNum"
+        >
+          Grid Number
+        </Switch>
       </div>
       <div class="btn-grp">
         <Button :icon="iconNew" @click="$emit('new')">New</Button>
@@ -120,7 +128,13 @@ export default {
 
 .btn-grp {
   display: flex;
+  flex-wrap: wrap;
   column-gap: 10px;
   margin-top: 15px;
+}
+
+.btn-grp > div {
+  width: 50%;
+  margin-top: 8px;
 }
 </style>
