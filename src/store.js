@@ -22,11 +22,11 @@ const store = createStore({
     },
     limits: {
       minCols: 3,
+      minSize: 0.05,
 
       minRows: 0,
       maxRows: 0,
       maxCols: 0,
-      minSize: 0,
       maxSize: 0,
     },
   }),
@@ -37,14 +37,17 @@ const store = createStore({
     },
 
     updateLimits(state) {
-      state.limits.minSize = Math.round(state.canvas.width * 0.05)
-      state.limits.maxSize = Math.round(state.canvas.width / state.limits.minCols)
+      state.limits.maxSize = 1 / state.limits.minCols
 
-      state.limits.maxCols = Math.round(state.canvas.width / state.limits.minSize)
-      state.limits.minRows = Math.round(state.canvas.height / state.limits.maxSize)
-      state.limits.maxRows = Math.round(state.canvas.height / state.limits.minSize)
+      const minSizePx = Math.round(state.canvas.width * state.limits.minSize)
+      const maxSizePx = Math.round(state.canvas.width * state.limits.maxSize)
 
-      state.controls.size = Math.round(state.canvas.width / state.controls.cols)
+      state.limits.maxCols = Math.round(state.canvas.width / minSizePx)
+      state.limits.minRows = Math.round(state.canvas.height / maxSizePx)
+      state.limits.maxRows = Math.round(state.canvas.height / minSizePx)
+
+      // state.controls.size = Math.round(state.canvas.width / state.controls.cols)
+      state.controls.size = 1 / state.controls.cols
     },
 
     resizeCanvas(state, { width, height }) {
@@ -60,13 +63,15 @@ const store = createStore({
       }
 
       if (state.controls.squareBox) {
-        state.controls.cols = toPrecision(state.canvas.width / state.controls.size)
-        state.controls.rows = toPrecision(state.canvas.height / state.controls.size)
+        state.controls.cols = toPrecision(1 / state.controls.size)
+        state.controls.rows = toPrecision(state.canvas.height / (state.canvas.width * state.controls.size))
       } else {
-        state.controls.size = toPrecision(state.canvas.width / state.controls.cols)
+        // state.controls.size = toPrecision(state.canvas.width / state.controls.cols)
+        state.controls.size = 1 / state.controls.cols
       }
 
       // console.log(JSON.stringify(state.controls, null, 2))
+      // console.log(JSON.stringify(state.limits, null, 2))
     },
 
     downloadImage() {

@@ -5,10 +5,10 @@
         <div class="info">Rows: {{ controls.rows }}</div>
         <div class="info">Cols: {{ controls.cols }}</div>
         <slider
-          @update="(val) => update({ size: val })"
-          :defaultVal="controls.size"
-          :min="limits.minSize"
-          :max="limits.maxSize"
+          @update="(val) => update({ size: val / 100 })"
+          :defaultVal="Math.round(controls.size * 100)"
+          :min="Math.round(limits.minSize * 100)"
+          :max="Math.round(limits.maxSize * 100)"
         >
           Size
         </slider>
