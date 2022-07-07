@@ -11,7 +11,7 @@ export default {
   emits: ["change"],
 
   data: () => ({
-    r: null,
+    r: new Renderer(),
     c: null,
     ctx: null,
     grid: {
@@ -30,7 +30,7 @@ export default {
 
   methods: {
     setup() {
-      this.r.setupCanvas(false);
+      this.r.setupCanvas(true);
       this.$store.commit("resizeCanvas", {
         width: this.r.c.width,
         height: this.r.c.height,

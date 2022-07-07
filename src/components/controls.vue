@@ -95,6 +95,7 @@ export default {
   align-items: center;
   justify-content: center;
   box-shadow: 0 5px 20px;
+  z-index: 1;
 }
 
 .controls * {

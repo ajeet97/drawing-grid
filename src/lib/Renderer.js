@@ -21,14 +21,21 @@ class Renderer {
     return store.state.controls
   }
 
-  setupCanvas(original = true) {
+  setupCanvas(preview = false) {
     if (!this.image) return
+
+    if (!preview) {
+      this.c.width = this.image.width
+      this.c.height = this.image.height
+      return;
+    }
 
     const r = this.image.height / this.image.width;
     const maxWidth = (this.c.parentElement && this.c.parentElement.clientWidth) || this.image.width;
+    const maxHeight = (this.c.parentElement && this.c.parentElement.clientHeight) || this.image.height;
 
-    this.c.width = original ? this.image.width : maxWidth;
-    this.c.height = r * this.c.width;
+    this.c.height = r * maxWidth > maxHeight ? maxHeight : r * maxWidth;
+    this.c.width = this.c.height / r;
   }
 
   computeGrid() {
