@@ -35,7 +35,7 @@ export default {
   methods: {
     setup() {
       this.r.setupCanvas(false)
-      this.$store.commit('setPreviewDimensions', {
+      this.$store.commit('resizeCanvas', {
         width: this.r.c.width,
         height: this.r.c.height,
       })

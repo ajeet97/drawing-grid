@@ -1,14 +1,14 @@
 <template>
   <div class="controls">
     <div class="container">
-      <div v-if="$store.state.controls.squareBox">
-        <div class="info">Rows: {{ $store.state.controls.rows }}</div>
-        <div class="info">Cols: {{ $store.state.controls.cols }}</div>
+      <div v-if="controls.squareBox">
+        <div class="info">Rows: {{ controls.rows }}</div>
+        <div class="info">Cols: {{ controls.cols }}</div>
         <slider
           @update="(val) => update({ size: val })"
-          :defaultVal="$store.state.controls.size"
-          :min="$store.state.minSize"
-          :max="$store.state.maxSize"
+          :defaultVal="controls.size"
+          :min="limits.minSize"
+          :max="limits.maxSize"
         >
           Size
         </slider>
@@ -16,43 +16,49 @@
       <div v-else>
         <slider
           @update="(val) => update({ rows: val })"
-          :defaultVal="$store.state.controls.rows"
-          :min="2"
-          :max="$store.state.maxRows"
+          :defaultVal="controls.rows"
+          :min="limits.minRows"
+          :max="limits.maxRows"
         >
           Rows
         </slider>
         <slider
           @update="(val) => update({ cols: val })"
-          :defaultVal="$store.state.controls.cols"
-          :min="2"
-          :max="$store.state.maxCols"
+          :defaultVal="controls.cols"
+          :min="limits.minCols"
+          :max="limits.maxCols"
         >
           Cols
         </slider>
       </div>
       <slider
         @update="(val) => update({ lineWidth: val })"
-        :defaultVal="$store.state.controls.lineWidth"
+        :defaultVal="controls.lineWidth"
         :max="10"
       >
         Line
       </slider>
       <Switch
         @change="(checked) => update({ squareBox: checked })"
-        :checked="$store.state.controls.squareBox"
+        :checked="controls.squareBox"
       >
         Square Grid
       </Switch>
       <div class="btn-grp">
-        <Button :icon="iconNew" @click="$store.commit('removeImage')">New</Button>
-        <Button :icon="iconDownload" @click="$store.commit('downloadImage')">Download</Button>
+        <Button :icon="iconNew" @click="$store.commit('removeImage')">
+          New
+        </Button>
+        <Button :icon="iconDownload" @click="$store.commit('downloadImage')">
+          Download
+        </Button>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import { mapState } from "vuex";
+
 import Button from "./button.vue";
 import Slider from "./slider.vue";
 import Switch from "./switch.vue";
@@ -68,6 +74,8 @@ export default {
   },
 
   data: () => ({ iconDownload, iconNew }),
+
+  computed: mapState(["controls", "limits"]),
 
   methods: {
     update(controls) {

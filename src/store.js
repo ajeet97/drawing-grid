@@ -15,15 +15,20 @@ const store = createStore({
     controls: {
       rows: 8,
       cols: 8,
-      size: 50,
-      squareBox: false,
+      size: 0,
+      squareBox: true,
       lineColor: '#FFFFFF',
       lineWidth: 2,
     },
-    maxRows: 0,
-    maxCols: 0,
-    minSize: 20,
-    maxSize: 200,
+    limits: {
+      minRows: 3,
+      minCols: 3,
+
+      maxRows: 0,
+      maxCols: 0,
+      minSize: 0,
+      maxSize: 0,
+    },
   }),
 
   mutations: {
@@ -35,19 +40,20 @@ const store = createStore({
       state.image = null
     },
 
-    updateMaxLimits(state) {
-      state.maxCols = Math.round(state.canvas.width / state.minSize)
-      state.maxRows = Math.round(state.canvas.height / state.minSize)
+    updateLimits(state) {
+      state.limits.minSize = Math.round(state.canvas.width * 0.05)
+      state.limits.maxSize = Math.round(state.canvas.width / state.limits.minCols)
+
+      state.limits.maxCols = Math.round(state.canvas.width / state.limits.minSize)
+      state.limits.maxRows = Math.round(state.canvas.height / state.limits.minSize)
+
+      state.controls.size = Math.round(state.canvas.width / state.controls.cols)
     },
 
-    setPreviewDimensions(state, { width, height }) {
-      if (!state.canvas) {
-        state.canvas = { width, height }
-        this.commit('updateControls', {})
-        this.commit('updateMaxLimits')
-      } else {
-        state.canvas = { width, height }
-      }
+    resizeCanvas(state, { width, height }) {
+      state.canvas = { width, height }
+      this.commit('updateLimits')
+      this.commit('updateControls', {})
     },
 
     updateControls(state, controls) {
