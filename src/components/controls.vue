@@ -38,12 +38,17 @@
       >
         Line
       </slider>
-      <Switch
-        @change="(checked) => update({ squareBox: checked })"
-        :checked="controls.squareBox"
-      >
-        Square Grid
-      </Switch>
+      <div class="btn-grp">
+        <Switch
+          @change="(checked) => update({ squareBox: checked })"
+          :checked="controls.squareBox"
+        >
+          Square Grid
+        </Switch>
+        <color-picker @change="(lineColor) => update({ lineColor })">
+          Line Color
+        </color-picker>
+      </div>
       <div class="btn-grp">
         <Button :icon="iconNew" @click="$emit('new')">New</Button>
         <Button :icon="iconDownload" @click="$store.commit('downloadImage')">
@@ -58,6 +63,7 @@
 import { mapState } from "vuex";
 
 import Button from "./button.vue";
+import ColorPicker from "./color-picker.vue";
 import Slider from "./slider.vue";
 import Switch from "./switch.vue";
 
@@ -69,6 +75,7 @@ export default {
 
   components: {
     Button,
+    ColorPicker,
     Slider,
     Switch,
   },
@@ -114,6 +121,6 @@ export default {
 .btn-grp {
   display: flex;
   column-gap: 10px;
-  margin-top: 10px;
+  margin-top: 15px;
 }
 </style>

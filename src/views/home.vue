@@ -12,6 +12,7 @@
 import Preview from "../components/preview.vue";
 import SelectImage from "../components/select-image.vue";
 import Controls from "../components/controls.vue";
+
 export default {
   components: {
     SelectImage,

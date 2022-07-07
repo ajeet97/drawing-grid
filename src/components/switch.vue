@@ -17,7 +17,6 @@ export default {
 .switch-box {
   display: flex;
   flex-direction: row;
-  margin-top: 10px;
 }
 
 .text {
