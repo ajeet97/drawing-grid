@@ -55,7 +55,7 @@ export default {
 
 .color-picker .text {
   user-select: none;
-  font-size: 20px;
+  font-size: var(--font-normal);
   line-height: 28px;
   margin-left: 10px;
 }

@@ -29,7 +29,7 @@ export default {
 }
 
 .text {
-  font-size: 20px;
+  font-size: var(--font-normal);
   line-height: 28px;
   margin-left: 10px;
   user-select: none;

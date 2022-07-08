@@ -24,6 +24,10 @@ export default {
   --color-3: #5cdb95;
   --color-4: #8ee4af;
   --color-5: #edf5e1;
+
+  --font-normal: 18px;
+  --font-small: calc(var(--forn-normal) - 2px);
+  --font-large: calc(var(--forn-normal) + 2px);
 }
 
 :root.theme-2 {

@@ -50,7 +50,7 @@ export default {
 .slider {
   display: flex;
   align-items: center;
-  font-size: 20px;
+  font-size: var(--font-normal);
   margin: 3px 0;
 }
 

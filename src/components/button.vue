@@ -21,7 +21,7 @@ export default {
 .btn {
   flex: 1;
   background: var(--color-2);
-  font-size: 20px;
+  font-size: var(--font-normal);
   height: 50px;
   padding: 10px 15px;
   border-radius: 5px;

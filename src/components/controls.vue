@@ -141,6 +141,7 @@ export default {
   justify-content: center;
   box-shadow: 0 -2px 10px var(--color-2);
   z-index: 1;
+  min-height: 0;
 }
 
 .controls * {
@@ -148,7 +149,7 @@ export default {
 }
 
 .info {
-  font-size: 18px;
+  font-size: var(--font-small);
 }
 
 .controls .container {
