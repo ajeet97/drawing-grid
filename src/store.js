@@ -1,4 +1,5 @@
 import { createStore } from 'vuex'
+import omit from 'lodash/omit'
 
 import Renderer from './lib/Renderer'
 
@@ -8,10 +9,32 @@ function toPrecision(num, p = 1) {
   return v / x
 }
 
+function loadTheme() {
+  return localStorage.getItem('theme') || 'theme-1'
+}
+
+function saveTheme(theme) {
+  localStorage.setItem('theme', theme)
+}
+
+/** @returns {{[key: string]: value}} */
+function loadControls() {
+  try {
+    const controls = JSON.parse(localStorage.getItem('controls') || '{}')
+    return controls || {}
+  } catch (err) {
+    return {}
+  }
+}
+
+function saveControls(controls) {
+  localStorage.setItem('controls', JSON.stringify(controls))
+}
+
 const store = createStore({
   state: () => ({
-    theme: 'theme-1',
-    totalThemes: 6,
+    theme: loadTheme(),
+    totalThemes: 5,
 
     image: null,
     canvas: { width: 0, height: 0 },
@@ -25,14 +48,15 @@ const store = createStore({
       showGridNum: true,
       gridNumSize: 9,
       gridNumOffset: 2,
+      ...loadControls(),
     },
     limits: {
       minCols: 3,
-      minSize: 0.05,
+      maxCols: 20,
 
+      minSize: 0,
       minRows: 0,
       maxRows: 0,
-      maxCols: 0,
       maxSize: 0,
     },
   }),
@@ -42,6 +66,7 @@ const store = createStore({
       state.theme = theme
       const html = document.querySelector('html')
       html.className = theme
+      saveTheme(theme)
     },
 
     updateImage(state, image) {
@@ -49,20 +74,20 @@ const store = createStore({
     },
 
     updateLimits(state) {
+      state.limits.minSize = 1 / state.limits.maxCols
       state.limits.maxSize = 1 / state.limits.minCols
 
-      const minSizePx = Math.round(state.canvas.width * state.limits.minSize)
-      const maxSizePx = Math.round(state.canvas.width * state.limits.maxSize)
+      const minSizePx = state.canvas.width * state.limits.minSize
+      const maxSizePx = state.canvas.width * state.limits.maxSize
 
-      state.limits.maxCols = Math.round(state.canvas.width / minSizePx)
       state.limits.minRows = Math.round(state.canvas.height / maxSizePx)
       state.limits.maxRows = Math.round(state.canvas.height / minSizePx)
 
-      // state.controls.size = Math.round(state.canvas.width / state.controls.cols)
       state.controls.size = 1 / state.controls.cols
+      state.controls.gridNumSize = 4 * state.canvas.width / 374
     },
 
-    resizeCanvas(state, { width, height }) {
+    reset(state, { width, height }) {
       state.canvas = { width, height }
       this.commit('updateLimits')
       this.commit('updateControls', {})
@@ -82,19 +107,22 @@ const store = createStore({
         state.controls.size = 1 / state.controls.cols
       }
 
+      saveControls(omit(state.controls, ['size', 'rows', 'cols']))
+
       // console.log(JSON.stringify(state.controls, null, 2))
       // console.log(JSON.stringify(state.limits, null, 2))
     },
 
     downloadImage(state) {
-      let scale = state.image.width / state.canvas.width
-      if (scale > 1) scale = 1 + (scale - 1) * 3 / 4
+      const scale = state.image.width / state.canvas.width
+      const s = 1 + (scale - 1) * 3 / 4
+      const ls = 1 + (scale - 1) * 1 / 4
 
       const canvas = document.createElement('canvas')
       const r = new Renderer(canvas, {
-        gridNumSize: state.controls.gridNumSize * scale,
-        gridNumOffset: state.controls.gridNumOffset * scale,
-        lineWidth: state.controls.lineWidth * scale,
+        gridNumSize: state.controls.gridNumSize * s,
+        gridNumOffset: state.controls.gridNumOffset * s,
+        lineWidth: state.controls.lineWidth * ls,
       })
       r.setupCanvas()
       r.render()

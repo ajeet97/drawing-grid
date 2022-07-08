@@ -79,14 +79,15 @@ class Renderer {
   }
 
   drawGridNumber() {
-    this.ctx.fillStyle = this.controls.lineColor
-    this.ctx.font = `${this.controls.gridNumSize}px Arial`
+    const fontSize = Math.round(this.controls.gridNumSize * Math.log2(this.controls.size * 40))
 
+    this.ctx.fillStyle = this.controls.lineColor
+    this.ctx.font = `${fontSize}px Arial`
 
     for (let r = 0; r < this.grid.rows; r++) {
       for (let c = 0; c < this.grid.cols; c++) {
         const dx = c === 0 ? this.controls.gridNumOffset : this.controls.gridNumOffset + this.controls.lineWidth
-        const dy = r === 0 ? this.controls.gridNumSize : this.controls.gridNumSize + this.controls.lineWidth
+        const dy = r === 0 ? fontSize : fontSize + this.controls.lineWidth
         this.ctx.fillText(`${r + 1},${c + 1}`, c * this.grid.w + dx, r * this.grid.h + dy)
       }
     }

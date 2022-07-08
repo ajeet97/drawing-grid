@@ -46,7 +46,10 @@
         >
           Square Grid
         </Switch>
-        <color-picker @change="(lineColor) => update({ lineColor })">
+        <color-picker
+          @change="(lineColor) => update({ lineColor })"
+          :defaultColor="controls.lineColor"
+        >
           Grid Color
         </color-picker>
         <Switch

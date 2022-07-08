@@ -10,12 +10,15 @@ export default {
   components: {
     home,
   },
+  mounted() {
+    this.$store.commit('changeTheme', this.$store.state.theme)
+  }
 };
 </script>
 
 <style>
 /* add more themes */
-:root.theme-1 {
+:root, :root.theme-1 {
   --color-1: #05386b;
   --color-2: #379683;
   --color-3: #5cdb95;
@@ -48,19 +51,13 @@ export default {
 }
 
 :root.theme-5 {
-  --color-1: #e7717d;
+  /* --color-1: #e7717d; */
+  --color-1: #50392b;
   --color-2: #7e685a;
   --color-3: #c2b9b0;
   --color-4: #c2cad0;
-  --color-5: #afd275;
-}
-
-:root.theme-6 {
-  --color-1: #1a1a1d;
-  --color-2: #6f2232;
-  --color-3: #950740;
-  --color-4: #4e4e50;
-  --color-5: #c3073f;
+  --color-5: #ffffff;
+  /* --color-5: #afd275; */
 }
 
 * {
