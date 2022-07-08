@@ -5,17 +5,22 @@ class Renderer {
    * @param {HTMLCanvasElement} canvas
    * @param {object} controls
    */
-  constructor(canvas, controls) {
+  constructor(canvas, controls, preview = false) {
     if (!canvas) return
     this.c = canvas
     this.ctx = canvas.getContext('2d')
     this.ctx.imageSmoothingEnabled = true;
     this.controls = store.state.controls
     this.overrideControls = controls || {}
+    this.preview = preview
 
     this.grid = {
       w: 0, h: 0,
       cols: 0, rows: 0,
+    }
+    this.imageCoord = {
+      x: 0, y: 0,
+      w: 0, h: 0,
     }
   }
 
@@ -23,21 +28,66 @@ class Renderer {
     return store.state.image
   }
 
-  setupCanvas(preview = false) {
-    if (!this.image) return
+  get showPage() {
+    return this.controls.showPage && this.page.width && this.page.height
+  }
 
-    if (!preview) {
+  get page() {
+    return { width: this.controls.pageWidth, height: this.controls.pageHeight }
+  }
+
+  calcOriginalDimensions() {
+    const imgRatio = this.image.height / this.image.width
+    const pageRatio = this.showPage ? this.page.height / this.page.width : imgRatio
+
+    if (imgRatio < pageRatio) {
       this.c.width = this.image.width
+      this.c.height = pageRatio * this.c.width
+    } else {
       this.c.height = this.image.height
-      return;
+      this.c.width = this.c.height / pageRatio
     }
+    this.calcImageCoord()
+  }
 
-    const r = this.image.height / this.image.width;
-    const maxWidth = (this.c.parentElement && this.c.parentElement.clientWidth) || this.image.width;
-    const maxHeight = (this.c.parentElement && this.c.parentElement.clientHeight) || this.image.height;
+  calcPreviewDimensions() {
+    const { width, height } = this.showPage ? this.page : this.image
+    const r = height / width;
+    const maxWidth = (this.c.parentElement && this.c.parentElement.clientWidth) || width;
+    const maxHeight = (this.c.parentElement && this.c.parentElement.clientHeight) || height;
 
     this.c.height = r * maxWidth > maxHeight ? maxHeight : r * maxWidth;
     this.c.width = this.c.height / r;
+    this.calcImageCoord()
+  }
+
+  calcImageCoord() {
+    const r = this.c.height / this.c.width
+    const imgR = this.image.height / this.image.width
+
+    if (imgR < r) {
+      this.imageCoord.w = this.c.width
+      this.imageCoord.h = imgR * this.c.width
+      this.imageCoord.x = 0
+      this.imageCoord.y = (this.c.height - this.imageCoord.h) / 2
+    } else {
+      this.imageCoord.w = this.c.height / imgR
+      this.imageCoord.h = this.c.height
+      this.imageCoord.x = (this.c.width - this.imageCoord.w) / 2
+      this.imageCoord.y = 0
+    }
+  }
+
+  setupCanvas() {
+    if (!this.image) return
+
+    if (this.preview) this.calcPreviewDimensions()
+    else this.calcOriginalDimensions()
+
+    store.commit('reset', {
+      width: this.c.width,
+      height: this.c.height
+    })
   }
 
   computeGrid() {
@@ -57,7 +107,11 @@ class Renderer {
   }
 
   drawImage() {
-    this.ctx.drawImage(this.image, 0, 0, this.c.width, this.c.height);
+    this.ctx.drawImage(
+      this.image,
+      this.imageCoord.x, this.imageCoord.y,
+      this.imageCoord.w, this.imageCoord.h,
+    );
   }
 
   drawGrid() {
@@ -97,6 +151,11 @@ class Renderer {
     }
   }
 
+  drawPage() {
+    this.ctx.fillStyle = '#F5F5F5'
+    this.ctx.fillRect(0, 0, this.c.width, this.c.height)
+  }
+
   render() {
     if (!this.image) return
     this.controls = {
@@ -104,8 +163,14 @@ class Renderer {
       ...this.overrideControls,
     }
 
+    if (this.controls.reset) {
+      this.setupCanvas()
+      this.controls.reset = false;
+    }
+
     this.ctx.clearRect(0, 0, this.c.width, this.c.height);
     this.computeGrid();
+    if (this.showPage) this.drawPage();
     this.drawImage();
     this.drawGrid();
     if (this.controls.showGridNum) this.drawGridNumber();

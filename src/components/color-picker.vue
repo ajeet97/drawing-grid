@@ -1,13 +1,13 @@
 <template>
-  <input
-    ref="picker"
-    id="color"
-    type="color"
-    style="visibility: hidden; width: 0"
-    :value="color"
-    @change="handleColorChange"
-  />
   <div class="color-picker" @click="pickColor">
+    <input
+      ref="picker"
+      id="color"
+      type="color"
+      style="visibility: hidden; width: 0"
+      :value="color"
+      @change="handleColorChange"
+    />
     <div class="box" :style="`background: ${color}`" />
     <div class="text"><slot>Color</slot></div>
   </div>
@@ -15,7 +15,7 @@
 
 <script>
 export default {
-  emits: ['change'],
+  emits: ["change"],
   props: {
     defaultColor: { type: String, default: "#FFF" },
   },
@@ -28,15 +28,15 @@ export default {
     },
 
     handleColorChange(event) {
-      this.color = event.target.value
-      this.$emit('change', this.color)
-    }
+      this.color = event.target.value;
+      this.$emit("change", this.color);
+    },
   },
   watch: {
     defaultColor() {
-      this.color = this.defaultColor
-    }
-  }
+      this.color = this.defaultColor;
+    },
+  },
 };
 </script>
 

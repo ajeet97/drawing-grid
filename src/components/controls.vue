@@ -38,6 +38,26 @@
       >
         Line
       </slider>
+      <div v-if="controls.showPage">
+        <slider
+          @update="(val) => update({ pageWidth: val })"
+          :defaultVal="controls.pageWidth"
+          :min="5"
+          :max="100"
+          unit="cm"
+        >
+          Width
+        </slider>
+        <slider
+          @update="(val) => update({ pageHeight: val })"
+          :defaultVal="controls.pageHeight"
+          :min="5"
+          :max="100"
+          unit="cm"
+        >
+          Height
+        </slider>
+      </div>
       <div class="btn-grp">
         <Switch
           @change="(checked) => update({ squareBox: checked })"
@@ -58,6 +78,13 @@
           :checked="controls.showGridNum"
         >
           Grid Number
+        </Switch>
+        <Switch
+          @change="(checked) => update({ showPage: checked })"
+          id="show-page"
+          :checked="controls.showPage"
+        >
+          Show Page
         </Switch>
       </div>
       <div class="btn-grp">
@@ -134,10 +161,12 @@ export default {
   flex-wrap: wrap;
   column-gap: 10px;
   margin-top: 15px;
+  align-items: center;
+  justify-content: center;
 }
 
 .btn-grp > div {
-  width: 50%;
+  width: calc(50% - 5px);
   margin-top: 8px;
 }
 </style>

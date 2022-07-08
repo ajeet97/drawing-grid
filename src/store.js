@@ -1,5 +1,6 @@
 import { createStore } from 'vuex'
 import pick from 'lodash/pick'
+import defaultsDeep from 'lodash/defaultsDeep'
 
 import Renderer from './lib/Renderer'
 
@@ -9,31 +10,32 @@ function toPrecision(num, p = 1) {
   return v / x
 }
 
-function loadTheme() {
-  return localStorage.getItem('theme') || 'theme-1'
-}
-
-function saveTheme(theme) {
-  localStorage.setItem('theme', theme)
-}
-
 /** @returns {{[key: string]: value}} */
-function loadControls() {
+function loadState() {
   try {
-    const controls = JSON.parse(localStorage.getItem('controls') || '{}')
-    return controls || {}
+    const state = JSON.parse(localStorage.getItem('state') || '{}')
+    return state || {}
   } catch (err) {
     return {}
   }
 }
 
-function saveControls(controls) {
-  localStorage.setItem('controls', JSON.stringify(controls))
+function saveState(state) {
+  localStorage.setItem('state', JSON.stringify(pick(state, [
+    'theme',
+    'controls.squareBox',
+    'controls.lineColor',
+    'controls.lineWidth',
+    'controls.showGridNum',
+    'controls.showPage',
+    'controls.pageWidth',
+    'controls.pageHeight',
+  ])))
 }
 
 const store = createStore({
-  state: () => ({
-    theme: loadTheme(),
+  state: () => defaultsDeep(loadState(), {
+    theme: 'theme-1',
     totalThemes: 5,
 
     image: null,
@@ -43,12 +45,17 @@ const store = createStore({
       cols: 8,
       size: 0,
       squareBox: true,
-      lineColor: '#FFFFFF',
+
+      lineColor: '#000000',
       lineWidth: 1,
+
       showGridNum: true,
       gridNumSize: 9,
       gridNumOffset: 1,
-      ...loadControls(),
+
+      showPage: false,
+      pageWidth: 21,
+      pageHeight: 29,
     },
     limits: {
       minCols: 3,
@@ -59,6 +66,8 @@ const store = createStore({
       maxRows: 0,
       maxSize: 0,
     },
+
+    reset: false,
   }),
 
   mutations: {
@@ -66,7 +75,7 @@ const store = createStore({
       state.theme = theme
       const html = document.querySelector('html')
       html.className = theme
-      saveTheme(theme)
+      saveState(state)
     },
 
     updateImage(state, image) {
@@ -94,6 +103,16 @@ const store = createStore({
     },
 
     updateControls(state, controls) {
+      if (
+        ('showPage' in controls)
+        || ('pageWidth' in controls)
+        || ('pageHeight' in controls)
+      ) {
+        controls.reset = true
+      } else {
+        controls.reset = false
+      }
+
       state.controls = {
         ...state.controls,
         ...controls,
@@ -103,16 +122,10 @@ const store = createStore({
         state.controls.cols = toPrecision(1 / state.controls.size)
         state.controls.rows = toPrecision(state.canvas.height / (state.canvas.width * state.controls.size))
       } else {
-        // state.controls.size = toPrecision(state.canvas.width / state.controls.cols)
         state.controls.size = 1 / state.controls.cols
       }
 
-      saveControls(pick(state.controls, [
-        'squareBox',
-        'lineColor',
-        'lineWidth',
-        'showGridNum',
-      ]))
+      saveState(state)
 
       // console.log(JSON.stringify(state.controls, null, 2))
       // console.log(JSON.stringify(state.limits, null, 2))

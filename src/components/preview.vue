@@ -11,7 +11,7 @@ export default {
   emits: ["change"],
 
   data: () => ({
-    r: new Renderer(),
+    r: new Renderer(null, null, true),
     c: null,
     ctx: null,
     grid: {
@@ -23,18 +23,14 @@ export default {
   }),
 
   mounted() {
-    this.r = new Renderer(this.$refs.canvas);
+    this.r = new Renderer(this.$refs.canvas, {}, true);
     window.addEventListener("resize", this.reset);
     this.reset();
   },
 
   methods: {
     setup() {
-      this.r.setupCanvas(true);
-      this.$store.commit("reset", {
-        width: this.r.c.width,
-        height: this.r.c.height,
-      });
+      this.r.setupCanvas();
     },
 
     render() {
