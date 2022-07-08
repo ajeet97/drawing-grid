@@ -80,15 +80,19 @@ class Renderer {
 
   drawGridNumber() {
     const fontSize = Math.round(this.controls.gridNumSize * Math.log2(this.controls.size * 40))
+    const halfLine = Math.round(this.controls.lineWidth / 2)
+    const offset = this.controls.gridNumOffset
 
     this.ctx.fillStyle = this.controls.lineColor
     this.ctx.font = `${fontSize}px Arial`
+    this.ctx.textAlign = 'left'
+    this.ctx.textBaseline = 'top';
 
     for (let r = 0; r < this.grid.rows; r++) {
       for (let c = 0; c < this.grid.cols; c++) {
-        const dx = c === 0 ? this.controls.gridNumOffset : this.controls.gridNumOffset + this.controls.lineWidth
-        const dy = r === 0 ? fontSize : fontSize + this.controls.lineWidth
-        this.ctx.fillText(`${r + 1},${c + 1}`, c * this.grid.w + dx, r * this.grid.h + dy)
+        const dx = c === 0 ? 0 : 0 + halfLine
+        const dy = r === 0 ? 0 : 0 + halfLine
+        this.ctx.fillText(`${r + 1},${c + 1}`, c * this.grid.w + dx + offset, r * this.grid.h + dy + offset)
       }
     }
   }

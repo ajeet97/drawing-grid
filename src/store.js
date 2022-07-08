@@ -1,5 +1,5 @@
 import { createStore } from 'vuex'
-import omit from 'lodash/omit'
+import pick from 'lodash/pick'
 
 import Renderer from './lib/Renderer'
 
@@ -47,7 +47,7 @@ const store = createStore({
       lineWidth: 1,
       showGridNum: true,
       gridNumSize: 9,
-      gridNumOffset: 2,
+      gridNumOffset: 1,
       ...loadControls(),
     },
     limits: {
@@ -107,7 +107,12 @@ const store = createStore({
         state.controls.size = 1 / state.controls.cols
       }
 
-      saveControls(omit(state.controls, ['size', 'rows', 'cols']))
+      saveControls(pick(state.controls, [
+        'squareBox',
+        'lineColor',
+        'lineWidth',
+        'showGridNum',
+      ]))
 
       // console.log(JSON.stringify(state.controls, null, 2))
       // console.log(JSON.stringify(state.limits, null, 2))
