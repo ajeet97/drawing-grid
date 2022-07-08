@@ -1,3 +1,5 @@
+import defaultsDeep from 'lodash/defaultsDeep'
+
 import store from '../store'
 
 class Renderer {
@@ -83,7 +85,9 @@ class Renderer {
 
     if (this.preview) this.calcPreviewDimensions()
     else this.calcOriginalDimensions()
+  }
 
+  reset() {
     store.commit('reset', {
       width: this.c.width,
       height: this.c.height
@@ -133,7 +137,9 @@ class Renderer {
   }
 
   drawGridNumber() {
-    const fontSize = Math.round(this.controls.gridNumSize * Math.log2(this.controls.size * 40))
+    const gridNumSize = 4 * this.c.width / 374
+
+    const fontSize = Math.round(gridNumSize * Math.log2(this.controls.size * 40))
     const halfLine = Math.round(this.controls.lineWidth / 2)
     const offset = this.controls.gridNumOffset
 
@@ -158,13 +164,11 @@ class Renderer {
 
   render() {
     if (!this.image) return
-    this.controls = {
-      ...store.state.controls,
-      ...this.overrideControls,
-    }
+    this.controls = defaultsDeep({}, this.overrideControls, store.state.controls)
 
     if (this.controls.reset) {
       this.setupCanvas()
+      this.reset()
       this.controls.reset = false;
     }
 

@@ -50,7 +50,6 @@ const store = createStore({
       lineWidth: 1,
 
       showGridNum: true,
-      gridNumSize: 9,
       gridNumOffset: 1,
 
       showPage: false,
@@ -68,6 +67,7 @@ const store = createStore({
     },
 
     reset: false,
+    downloading: false,
   }),
 
   mutations: {
@@ -132,24 +132,27 @@ const store = createStore({
     },
 
     downloadImage(state) {
-      const scale = state.image.width / state.canvas.width
-      const s = 1 + (scale - 1) * 3 / 4
-      const ls = 1 + (scale - 1) * 1 / 4
+      state.downloading = true
+      setImmediate(() => {
+        const scale = state.image.width / state.canvas.width
+        const s = 1 + (scale - 1) * 3 / 4
+        const ls = 1 + (scale - 1) * 1 / 4
 
-      const canvas = document.createElement('canvas')
-      const r = new Renderer(canvas, {
-        gridNumSize: state.controls.gridNumSize * s,
-        gridNumOffset: state.controls.gridNumOffset * s,
-        lineWidth: state.controls.lineWidth * ls,
+        const canvas = document.createElement('canvas')
+        const r = new Renderer(canvas, {
+          gridNumOffset: state.controls.gridNumOffset * s,
+          lineWidth: state.controls.lineWidth * ls,
+        })
+        r.setupCanvas()
+        r.render()
+
+        const dataUrl = r.c.toDataURL('image/png');
+        const a = document.createElement('a')
+        a.href = dataUrl
+        a.download = 'download.png'
+        a.click()
+        state.downloading = false
       })
-      r.setupCanvas()
-      r.render()
-
-      const dataUrl = r.c.toDataURL('image/png');
-      const a = document.createElement('a')
-      a.href = dataUrl
-      a.download = 'download.png'
-      a.click()
     },
   }
 })
